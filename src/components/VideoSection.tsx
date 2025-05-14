@@ -32,7 +32,7 @@ export function VideoSection({ showVideo, setShowVideo }: VideoSectionProps) {
             messageType: 'sensor_msgs/msg/Image'
         })
 
-        imageTopic.subscribe((message: Message) => {
+        /*imageTopic.subscribe((message: Message) => {
             console.log('Received image in VideoSection:', message)
             imageTopic.unsubscribe()
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -42,7 +42,7 @@ export function VideoSection({ showVideo, setShowVideo }: VideoSectionProps) {
                 // @ts-ignore
                 setImageSrc(`data:image/jpeg;base64,${message.data}`)
             }
-        })
+        })*/
 
         return () => {
             imageTopic.unsubscribe()

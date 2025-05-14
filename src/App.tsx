@@ -341,7 +341,7 @@ function App() {
   });
 
   image_color_raw_topic.subscribe((message) => {
-    console.log('Received image:', message.data)
+    console.log('Received image data:', message.data)
     image_color_raw_topic.unsubscribe()
   });
 
