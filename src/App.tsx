@@ -342,7 +342,7 @@ function App() {
 
   image_color_raw_topic.subscribe((message) => {
     console.log('Received image:', message.data)
-    // Traitez l'image ici
+    image_color_raw_topic.unsubscribe()
   });
 
   const handleMapClick = (e: LeafletMouseEvent) => {

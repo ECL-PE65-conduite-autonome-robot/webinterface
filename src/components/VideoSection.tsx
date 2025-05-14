@@ -34,6 +34,7 @@ export function VideoSection({ showVideo, setShowVideo }: VideoSectionProps) {
 
         imageTopic.subscribe((message: Message) => {
             console.log('Received image in VideoSection:', message)
+            imageTopic.unsubscribe()
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
             if(message.data) {
