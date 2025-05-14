@@ -334,6 +334,17 @@ function App() {
     }
   }
 
+  const image_color_raw_topic = new ROSLIB.Topic({
+    ros: ros,
+    name: '/camera/color/image_raw',
+    messageType: 'sensor_msgs/msg/Image'
+  });
+
+  image_color_raw_topic.subscribe((message) => {
+    console.log('Received image:', message)
+    // Traitez l'image ici
+  });
+
   const handleMapClick = (e: LeafletMouseEvent) => {
     const { lat, lng } = e.latlng
     const newWaypoint: Waypoint = {
