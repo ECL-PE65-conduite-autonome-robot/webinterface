@@ -39,8 +39,8 @@ export function VideoSection({ showVideo, setShowVideo }: VideoSectionProps) {
         console.log('Time taken to convert image:', timeend - timestart, 'ms')*/
 
         imageTopic.subscribe((message: Message) => {
-            console.log('Received image in VideoSection:', message)
-            imageTopic.unsubscribe()
+            //console.log('Received image in VideoSection:', message)
+            //imageTopic.unsubscribe()
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
             if(message.data) {
