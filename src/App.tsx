@@ -111,7 +111,7 @@ function App() {
   const rosRef = useRef<ROSLIB.Ros | null>(null)
   if (!rosRef.current) {
     rosRef.current = new ROSLIB.Ros({
-      url: 'ws://localhost:9090'
+      url: 'ws://0.0.0.0:9090'
     })
   }
   const ros = rosRef.current
@@ -431,13 +431,8 @@ function App() {
 
       <main className="max-w-7xl mx-auto p-6 grid grid-cols-1 lg:grid-cols-2 gap-6">
         <ControlPanel onMove={handleMove} disabled={status !== RobotStatus.RUNNING} />
-        <MapSection
-          waypoints={waypoints}
-          selectedWaypointType={selectedWaypointType}
-          setSelectedWaypointType={setSelectedWaypointType}
-          onMapClick={handleMapClick}
-          removeWaypoint={removeWaypoint}
-        />
+
+        <StatsSection stats={stats} />
 
         <VideoSection
           showVideo={showVideo}
@@ -451,7 +446,13 @@ function App() {
           topicName="/camera/depth/image_raw"
         />
 
-        <StatsSection stats={stats} />
+        <MapSection
+          waypoints={waypoints}
+          selectedWaypointType={selectedWaypointType}
+          setSelectedWaypointType={setSelectedWaypointType}
+          onMapClick={handleMapClick}
+          removeWaypoint={removeWaypoint}
+        />
 
         <GraphSection
           selectedGraph={selectedGraph}

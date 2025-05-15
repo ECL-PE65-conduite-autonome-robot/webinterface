@@ -15,7 +15,7 @@ export function VideoSection({ showVideo, setShowVideo, topicName }: VideoSectio
     useEffect(() => {
         // Création de l'instance ROS
         const ros = new ROSLIB.Ros({
-            url: 'ws://localhost:9090'
+            url: 'ws://0.0.0.0:9090'
         })
 
         ros.on('connection', () => {
