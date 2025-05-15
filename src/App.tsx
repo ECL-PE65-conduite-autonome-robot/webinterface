@@ -337,7 +337,8 @@ function App() {
   const image_color_raw_topic = new ROSLIB.Topic({
     ros: ros,
     name: '/camera/color/image_raw',
-    messageType: 'sensor_msgs/msg/Image'
+    messageType: 'sensor_msgs/msg/Image',
+    compression: 'png'
   });
 
   image_color_raw_topic.subscribe((message) => {

@@ -32,7 +32,13 @@ export function VideoSection({ showVideo, setShowVideo }: VideoSectionProps) {
             messageType: 'sensor_msgs/msg/Image'
         })
 
-        /*imageTopic.subscribe((message: Message) => {
+        /*const timestart = Date.now()
+
+        //setImageSrc(convertRGB8ToDataURL(imageb64, 640, 480))
+        const timeend = Date.now()
+        console.log('Time taken to convert image:', timeend - timestart, 'ms')*/
+
+        imageTopic.subscribe((message: Message) => {
             console.log('Received image in VideoSection:', message)
             imageTopic.unsubscribe()
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -40,9 +46,11 @@ export function VideoSection({ showVideo, setShowVideo }: VideoSectionProps) {
             if(message.data) {
                 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                 // @ts-ignore
-                setImageSrc(`data:image/jpeg;base64,${message.data}`)
+                setImageSrc(convertRGB8ToDataURL(message.data, 640, 480))
+
+                //setImageSrc(`data:image/jpeg;base64,${message.data}`)
             }
-        })*/
+        })
 
         return () => {
             imageTopic.unsubscribe()
@@ -84,4 +92,58 @@ export function VideoSection({ showVideo, setShowVideo }: VideoSectionProps) {
       )}
     </section>
   )
+}
+
+function convertRGB8ToDataURL(rawData: string, width: number, height: number): string {
+    // Décode la chaîne base64 en valeurs binaires
+    const binary = atob(rawData);
+    const canvas = document.createElement('canvas');
+    canvas.width = width;
+    canvas.height = height;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return '';
+
+    // Prépare un tableau pour les données RGBA
+    const imageData = ctx.createImageData(width, height);
+    const buffer = imageData.data;
+    let dataIndex = 0;
+    // Chaque pixel est constitué de 3 octets RGB; on ajoute l'opacité (255) pour chaque pixel
+    for (let i = 0; i < binary.length; i += 3) {
+        buffer[dataIndex++] = binary.charCodeAt(i);     // R
+        buffer[dataIndex++] = binary.charCodeAt(i + 1); // G
+        buffer[dataIndex++] = binary.charCodeAt(i + 2); // B
+        buffer[dataIndex++] = 255;                      // A
+    }
+    ctx.putImageData(imageData, 0, 0);
+    return canvas.toDataURL('image/jpeg');
+}
+
+function convertRGB82(rawData: string, width: number, height: number): string {
+    const canvas = document.createElement('canvas');
+    canvas.width = width;
+    canvas.height = height;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return "";
+
+    // Étape 1 : Décodage base64 → Uint8Array
+    const binaryStr = atob(rawData);
+    const rgb = new Uint8Array(binaryStr.length);
+    for (let i = 0; i < binaryStr.length; i++) {
+      rgb[i] = binaryStr.charCodeAt(i);
+    }
+
+    // Étape 2 : Conversion RGB → RGBA
+    const rgba = new Uint8ClampedArray((rgb.length / 3) * 4);
+    for (let i = 0, j = 0; i < rgb.length; i += 3, j += 4) {
+      rgba[j] = rgb[i];         // R
+      rgba[j + 1] = rgb[i + 1]; // G
+      rgba[j + 2] = rgb[i + 2]; // B
+      rgba[j + 3] = 255;        // A (opaque)
+    }
+
+    // Étape 3 : Création de l'image
+    const imageData = new ImageData(rgba, width, height);
+    ctx.putImageData(imageData, 0, 0);
+    const dataURL = canvas.toDataURL('image/jpeg');
+    return dataURL;
 }
