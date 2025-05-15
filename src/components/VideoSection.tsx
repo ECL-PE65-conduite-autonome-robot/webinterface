@@ -29,7 +29,8 @@ export function VideoSection({ showVideo, setShowVideo }: VideoSectionProps) {
         const imageTopic = new ROSLIB.Topic({
             ros: ros,
             name: '/camera/color/image_raw',
-            messageType: 'sensor_msgs/msg/Image'
+            messageType: 'sensor_msgs/msg/Image',
+            compression: 'png'
         })
 
         /*const timestart = Date.now()
@@ -46,9 +47,9 @@ export function VideoSection({ showVideo, setShowVideo }: VideoSectionProps) {
             if(message.data) {
                 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                 // @ts-ignore
-                setImageSrc(convertRGB8ToDataURL(message.data, 640, 480))
+                //setImageSrc(convertRGB8ToDataURL(message.data, 640, 480))
 
-                //setImageSrc(`data:image/jpeg;base64,${message.data}`)
+                setImageSrc(`data:image/jpeg;base64,${message.data}`)
             }
         })
 
