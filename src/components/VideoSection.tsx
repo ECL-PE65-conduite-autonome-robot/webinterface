@@ -48,7 +48,7 @@ export function VideoSection({ showVideo, setShowVideo, topicName }: VideoSectio
             if(message.data) {
                 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                 // @ts-ignore
-                setImageSrc(convertRGB8ToDataURL(message.data, 640, 480))
+                setImageSrc(message.encoding === 'rgb8' ? convertRGB8ToDataURL(message.data, 640, 480) : message.enconding == '16UC1' ?convert16UC1ToDataURL(message.data, 640, 480) : null)
 
                 //setImageSrc(`data:image/png;base64,${message.data}`)
             }
@@ -120,32 +120,42 @@ function convertRGB8ToDataURL(rawData: string, width: number, height: number): s
     return canvas.toDataURL('image/jpeg');
 }
 
-function convertRGB82(rawData: string, width: number, height: number): string {
+/**
+ * Convertit une image 16UC1 (16 bits, unsigned, 1 canal) en Data URL
+ * @param rawData Les données brutes de l'image en base64
+ * @param width Largeur de l'image
+ * @param height Hauteur de l'image
+ * @returns Data URL de l'image
+ */
+function convert16UC1ToDataURL(rawData: string, width: number, height: number): string {
+    // Décode la chaîne base64 en valeurs binaires
+    const binary = atob(rawData);
     const canvas = document.createElement('canvas');
     canvas.width = width;
     canvas.height = height;
     const ctx = canvas.getContext('2d');
-    if (!ctx) return "";
+    if (!ctx) return '';
 
-    // Étape 1 : Décodage base64 → Uint8Array
-    const binaryStr = atob(rawData);
-    const rgb = new Uint8Array(binaryStr.length);
-    for (let i = 0; i < binaryStr.length; i++) {
-      rgb[i] = binaryStr.charCodeAt(i);
+    // Prépare un tableau pour les données RGBA
+    const imageData = ctx.createImageData(width, height);
+    const buffer = imageData.data;
+    let dataIndex = 0;
+    
+    // Parcours des données 16 bits (2 octets par pixel)
+    for (let i = 0; i < binary.length; i += 2) {
+        // Combine les deux octets pour obtenir une valeur 16 bits
+        const value = (binary.charCodeAt(i) << 8) | binary.charCodeAt(i + 1);
+        
+        // Normalisation de la valeur 16 bits (0-65535) vers 8 bits (0-255)
+        const normalizedValue = Math.round(value / 256); // ou (value >> 8) pour un shift plus rapide
+        
+        // Applique la même valeur aux composantes R, G, B (niveau de gris)
+        buffer[dataIndex++] = normalizedValue; // R
+        buffer[dataIndex++] = normalizedValue; // G
+        buffer[dataIndex++] = normalizedValue; // B
+        buffer[dataIndex++] = 255;             // A (opaque)
     }
-
-    // Étape 2 : Conversion RGB → RGBA
-    const rgba = new Uint8ClampedArray((rgb.length / 3) * 4);
-    for (let i = 0, j = 0; i < rgb.length; i += 3, j += 4) {
-      rgba[j] = rgb[i];         // R
-      rgba[j + 1] = rgb[i + 1]; // G
-      rgba[j + 2] = rgb[i + 2]; // B
-      rgba[j + 3] = 255;        // A (opaque)
-    }
-
-    // Étape 3 : Création de l'image
-    const imageData = new ImageData(rgba, width, height);
+    
     ctx.putImageData(imageData, 0, 0);
-    const dataURL = canvas.toDataURL('image/jpeg');
-    return dataURL;
+    return canvas.toDataURL('image/jpeg');
 }
