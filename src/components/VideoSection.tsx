@@ -48,7 +48,7 @@ export function VideoSection({ showVideo, setShowVideo, topicName }: VideoSectio
             if(message.data) {
                 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                 // @ts-ignore
-                setImageSrc(message.encoding === 'rgb8' ? convertRGB8ToDataURL(message.data, 640, 480) : message.enconding == '16UC1' ?convert16UC1ToDataURL(message.data, 640, 480) : null)
+                setImageSrc(message.encoding === 'rgb8' ? convertRGB8ToDataURL(message.data, 640, 480) : convert16UC1ToDataURL(message.data, 640, 480))
 
                 //setImageSrc(`data:image/png;base64,${message.data}`)
             }
