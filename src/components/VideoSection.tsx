@@ -4,10 +4,11 @@ import ROSLIB, { Message } from 'roslib'
 
 interface VideoSectionProps {
   showVideo: boolean
+  topicName: string
   setShowVideo: (show: boolean) => void
 }
 
-export function VideoSection({ showVideo, setShowVideo }: VideoSectionProps) {
+export function VideoSection({ showVideo, setShowVideo, topicName }: VideoSectionProps) {
 
   const [imageSrc, setImageSrc] = useState<string | null>(null)
 
@@ -28,7 +29,7 @@ export function VideoSection({ showVideo, setShowVideo }: VideoSectionProps) {
         // Abonnez-vous au topic de l'image
         const imageTopic = new ROSLIB.Topic({
             ros: ros,
-            name: '/camera/color/image_raw',
+            name: topicName,
             messageType: 'sensor_msgs/msg/Image',
             throttle_rate: 100 // 1 image par 1/10 seconde
         })

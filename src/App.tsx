@@ -439,12 +439,19 @@ function App() {
           removeWaypoint={removeWaypoint}
         />
 
-        <StatsSection stats={stats} />
+        <VideoSection
+          showVideo={showVideo}
+          setShowVideo={setShowVideo}
+          topicName="/camera/color/image_raw"
+        />
 
         <VideoSection
           showVideo={showVideo}
           setShowVideo={setShowVideo}
+          topicName="/camera/depth/image_raw"
         />
+
+        <StatsSection stats={stats} />
 
         <GraphSection
           selectedGraph={selectedGraph}
