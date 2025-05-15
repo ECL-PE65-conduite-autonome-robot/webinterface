@@ -48,6 +48,7 @@ export function VideoSection({ showVideo, setShowVideo }: VideoSectionProps) {
                 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                 // @ts-ignore
                 //setImageSrc(convertRGB8ToDataURL(message.data, 640, 480))
+                console.log('Received image in VideoSection:', message.data)
 
                 setImageSrc(`data:image/png;base64,${message.data}`)
             }
