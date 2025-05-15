@@ -30,7 +30,7 @@ export function VideoSection({ showVideo, setShowVideo }: VideoSectionProps) {
             ros: ros,
             name: '/camera/color/image_raw',
             messageType: 'sensor_msgs/msg/Image',
-            compression: 'png'
+            throttle_rate: 100 // 1 image par 1/10 seconde
         })
 
         /*const timestart = Date.now()
@@ -47,10 +47,9 @@ export function VideoSection({ showVideo, setShowVideo }: VideoSectionProps) {
             if(message.data) {
                 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                 // @ts-ignore
-                //setImageSrc(convertRGB8ToDataURL(message.data, 640, 480))
-                console.log('Received image in VideoSection:', message.data)
+                setImageSrc(convertRGB8ToDataURL(message.data, 640, 480))
 
-                setImageSrc(`data:image/png;base64,${message.data}`)
+                //setImageSrc(`data:image/png;base64,${message.data}`)
             }
         })
 
