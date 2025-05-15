@@ -111,7 +111,7 @@ function App() {
   const rosRef = useRef<ROSLIB.Ros | null>(null)
   if (!rosRef.current) {
     rosRef.current = new ROSLIB.Ros({
-      url: 'ws://0.0.0.0:9090'
+      url: 'ws://192.168.0.100:9090'
     })
   }
   const ros = rosRef.current
