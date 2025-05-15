@@ -125,9 +125,10 @@ function convertRGB8ToDataURL(rawData: string, width: number, height: number): s
  * @param rawData Les données brutes de l'image en base64
  * @param width Largeur de l'image
  * @param height Hauteur de l'image
+ * @param step Nombre d'octets par ligne (défaut: largeur * 2)
  * @returns Data URL de l'image
  */
-function convert16UC1ToDataURL(rawData: string, width: number, height: number): string {
+function convert16UC1ToDataURL(rawData: string, width: number, height: number, step: number = width * 2): string {
     // Décode la chaîne base64 en valeurs binaires
     const binary = atob(rawData);
     const canvas = document.createElement('canvas');
@@ -139,21 +140,32 @@ function convert16UC1ToDataURL(rawData: string, width: number, height: number): 
     // Prépare un tableau pour les données RGBA
     const imageData = ctx.createImageData(width, height);
     const buffer = imageData.data;
-    let dataIndex = 0;
     
-    // Parcours des données 16 bits (2 octets par pixel)
-    for (let i = 0; i < binary.length; i += 2) {
-        // Combine les deux octets pour obtenir une valeur 16 bits
-        const value = (binary.charCodeAt(i) << 8) | binary.charCodeAt(i + 1);
+    // Nombre d'octets utilisés par pixel
+    const bytesPerPixel = 2;
+    // Nombre de pixels à traiter par ligne
+    const pixelsPerLine = width;
+    
+    // Parcours l'image ligne par ligne
+    for (let y = 0; y < height; y++) {
+        const rowOffset = y * step;
         
-        // Normalisation de la valeur 16 bits (0-65535) vers 8 bits (0-255)
-        const normalizedValue = Math.round(value / 256); // ou (value >> 8) pour un shift plus rapide
-        
-        // Applique la même valeur aux composantes R, G, B (niveau de gris)
-        buffer[dataIndex++] = normalizedValue; // R
-        buffer[dataIndex++] = normalizedValue; // G
-        buffer[dataIndex++] = normalizedValue; // B
-        buffer[dataIndex++] = 255;             // A (opaque)
+        for (let x = 0; x < pixelsPerLine; x++) {
+            const pixelOffset = rowOffset + x * bytesPerPixel;
+            const bufferOffset = (y * width + x) * 4;
+            
+            // Combine les deux octets pour obtenir une valeur 16 bits
+            const value = (binary.charCodeAt(pixelOffset) << 8) | binary.charCodeAt(pixelOffset + 1);
+            
+            // Normalisation de la valeur 16 bits (0-65535) vers 8 bits (0-255)
+            const normalizedValue = value >> 8; // Équivalent à Math.round(value / 256)
+            
+            // Applique la même valeur aux composantes R, G, B (niveau de gris)
+            buffer[bufferOffset] = normalizedValue;     // R
+            buffer[bufferOffset + 1] = normalizedValue; // G
+            buffer[bufferOffset + 2] = normalizedValue; // B
+            buffer[bufferOffset + 3] = 255;             // A (opaque)
+        }
     }
     
     ctx.putImageData(imageData, 0, 0);
