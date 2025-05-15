@@ -49,7 +49,7 @@ export function VideoSection({ showVideo, setShowVideo }: VideoSectionProps) {
                 // @ts-ignore
                 //setImageSrc(convertRGB8ToDataURL(message.data, 640, 480))
 
-                setImageSrc(`data:image/jpeg;base64,${message.data}`)
+                setImageSrc(`data:image/png;base64,${message.data}`)
             }
         })
 
